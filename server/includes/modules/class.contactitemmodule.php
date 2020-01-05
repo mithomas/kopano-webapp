@@ -265,14 +265,20 @@
 						$action['props']['other_address'] = str_replace('\n', '\r\n', $action['props']['other_address']);
 					}
 
-					// check birthday props to make an appointment
-					if(!empty($action['props']['birthday'])){
+					// check birthday props to make an appointment and adjust birthday date to UTC (KW-3202)
+					if(!empty($action['props']['birthday'])) {
 						$action['props']['birthday_eventid'] = $this->updateAppointments($store, $action, 'birthday');
+						if(!empty($action['props']['timezone'])) {
+							$action['props']['birthday'] = $action['props']['birthday'] - $action['props']['timezone']*60;
+						}
 					}
 
-					// check anniversary props to make an appointment
+					// check anniversary props to make an appointment and adjust anniversary date to UTC (KW-3202)
 					if(!empty($action['props']['wedding_anniversary'])){
 						$action['props']['anniversary_eventid'] = $this->updateAppointments($store, $action, 'wedding_anniversary');
+					 	if(!empty($action['props']['timezone'])) {
+							$action['props']['wedding_anniversary'] = $action['props']['wedding_anniversary'] - $action['props']['timezone']*60;
+						}
 					}
 
 					// do the conversion when all processing has been finished
